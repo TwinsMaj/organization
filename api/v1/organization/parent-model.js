@@ -1,13 +1,13 @@
 module.exports = function(sequelize, DataType){
 
-	var Organization = sequelize.define("organization", {
+	var Parent = sequelize.define("parent", {
 		id: {
 		    type: DataType.STRING,
 		    primaryKey: true,
 		    unique: true,
 		    autoIncrement: false
 		},
-		name: {
+		parent: {
 			type: DataType.STRING,
 			allowNull: false,
 			unique: true
@@ -15,6 +15,6 @@ module.exports = function(sequelize, DataType){
 		
 	})
 
-	return Organization;
+	return Parent;
 
 }
