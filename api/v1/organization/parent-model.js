@@ -1,16 +1,12 @@
 module.exports = function(sequelize, DataType){
 
 	var Parent = sequelize.define("parent", {
-		id: {
+		org_id: {
 		    type: DataType.STRING,
-		    primaryKey: true,
-		    unique: true,
-		    autoIncrement: false
 		},
 		parent: {
 			type: DataType.STRING,
 			allowNull: false,
-			unique: true
 		},
 		
 	})
