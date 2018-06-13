@@ -6,4 +6,7 @@ var express 		= require('express'),
 organizationRouter.route('/')
 	.post(organizationController.addOrganizations)
 
+organizationRouter.route('/:orgname')	
+	.get(organizationController.getOrganizationRelations)
+
 module.exports = organizationRouter;

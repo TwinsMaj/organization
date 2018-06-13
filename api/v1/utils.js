@@ -36,3 +36,14 @@ exports.serialize = function(payload) {
 
     })(res = {nodes: [], edges: []}, payload, parent = 'null')
 }
+
+
+exports.calculateStart = function(page, display) {
+    let start = 0;
+
+    if(page !== undefined) {
+        start = (page - 1) * display
+    }
+
+    return start
+}
