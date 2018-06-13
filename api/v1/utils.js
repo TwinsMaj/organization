@@ -11,24 +11,26 @@ exports.serialize = function(payload) {
 
     return (function traverse(res, payload, parent) {
 
-        var row = {}, uuid = '';
+        var row = {}, parentID = '';
 
-        uuid = uuidv4()
-        row.id = uuid
+        row.id = uuidv4()
         row.name = payload["org_name"]
 
         var child = fetchDuplicateChild(res.nodes, row.name)
 
         if(child !== undefined) {
             res.edges.push({org_id: child.id, parent: parent})
+            parentID = child.id
         } else {
             res.nodes.push(row);
             res.edges.push({org_id: row.id, parent: parent})
+            parentID = row.id
         }
 
         if(payload.hasOwnProperty('daughters')){
             payload["daughters"].forEach(function(daughter) {
-                traverse(res, daughter, uuid)
+                //id = (child !== undefined) ? child.id : row.id
+                traverse(res, daughter, parentID)
             })
         }
 

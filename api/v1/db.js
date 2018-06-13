@@ -3,7 +3,8 @@ let config 		= require('../../config/config.js'),
 
 let sequelize = new Sequelize(config.db.database, config.db.username, config.db.password, {
 	dialect: config.db.dialect,
-	storage: config.approot + "/data.sqlite"
+	storage: config.approot + "/data.sqlite",
+	logging: false
 });
 
 let db = {};

@@ -8,7 +8,7 @@ let db                  = require("../db.js"),
 
 exports.addOrganizations = function(req, res, next) {
 
-    db.conn.sync({force:false}).then(function() {
+    db.conn.sync({force:true}).then(function() {
 
         let payload             = req.body,
             serializedPayload   = _utils.serialize(payload),
@@ -64,19 +64,19 @@ exports.getOrganizationRelations = function(req, res, next) {
             let organizationID = item[0].id;
 
             db.conn.query(
-                `SELECT o.name, 'sisters' AS relationship_type 
+                `SELECT 'sisters' AS relationship_type, o.name 
                  FROM parents p 
                  LEFT JOIN organizations o ON p.org_id = o.id 
                  WHERE p.parent in 
                  (SELECT parent FROM parents WHERE org_id = '${organizationID}') AND p.org_id <> '${organizationID}'
                  UNION 
-                 SELECT o.name, 'parent' AS relationship_type 
+                 SELECT 'parent' AS relationship_type, o.name
                  FROM parents p 
                  JOIN parents c ON p.org_id = c.parent
                  LEFT JOIN organizations o ON p.org_id = o.id 
                  WHERE c.org_id='${organizationID}' 
                  UNION 
-                 SELECT o.name, 'daughters' AS relationship_type 
+                 SELECT 'daughters' AS relationship_type, o.name
                  FROM organizations o 
                  JOIN parents p ON o.id = p.org_id
                  WHERE p.parent = '${organizationID}' 
