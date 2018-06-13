@@ -1,5 +1,8 @@
+require('dotenv').config()
+
 var server = require('./server/server.js'),
-	PORT   = 8888;
+	config = require('./config/config.js'),
+	PORT   = config.port
 
 // start listening
 server.listen(PORT, function () {

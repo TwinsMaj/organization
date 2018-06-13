@@ -1,7 +1,8 @@
 let db                  = require("../db.js"),
     organizationModel   = db.organizationModel,
     parentModel         = db.parentModel,
-    _utils              = require("../utils.js");
+    _utils              = require("../utils.js"),
+    HttpStatus          = require('http-status-codes');
 
 
 exports.addOrganizations = function(req, res, next) {
@@ -16,7 +17,7 @@ exports.addOrganizations = function(req, res, next) {
         parentModel.bulkCreate(edges).then(function() {
             // nothing to do here...
         }).catch(function(e){
-            req.errstatus = 500;
+            req.errstatus = HttpStatus.INTERNAL_SERVER_ERROR;
             next(err)
         })
 
@@ -25,15 +26,15 @@ exports.addOrganizations = function(req, res, next) {
             return organizationModel.findAll();
 
         }).then(function(nodes) {
-            res.status(200).json(nodes);
+            res.status(HttpStatus.OK).json(nodes);
 
         }).catch(function(err) {
-            req.errstatus = 500;
+            req.errstatus = HttpStatus.INTERNAL_SERVER_ERROR;
             next(err)
         })
 
     }).catch(function(err) {
-        req.errstatus = 500;
+        req.errstatus = HttpStatus.INTERNAL_SERVER_ERROR;
         next(err)
     })
 }
@@ -87,20 +88,20 @@ exports.getOrganizationRelations = function(req, res, next) {
                 }
 
                 graph.push(pagination);
-                res.status(200).json(graph)
+                res.status(HttpStatus.OK).json(graph)
 
             }).catch(function(err) {
-                req.errstatus = 500;
+                req.errstatus = HttpStatus.INTERNAL_SERVER_ERROR;
                 next(err)
             });
 
         }).catch(function(err) {
-            req.errstatus = 500;
+            req.errstatus = HttpStatus.INTERNAL_SERVER_ERROR;
             next(err)
         });
 
     }).catch(function(err) {
-        req.errstatus = 500;
+        req.errstatus = HttpStatus.INTERNAL_SERVER_ERROR;
         next(err)
     });
 
