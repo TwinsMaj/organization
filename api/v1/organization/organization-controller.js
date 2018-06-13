@@ -2,7 +2,8 @@ let db                  = require("../db.js"),
     organizationModel   = db.organizationModel,
     parentModel         = db.parentModel,
     _utils              = require("../utils.js"),
-    HttpStatus          = require('http-status-codes');
+    HttpStatus          = require('http-status-codes'),
+    paginate            = require("paginate-array");
 
 
 exports.addOrganizations = function(req, res, next) {
@@ -30,11 +31,13 @@ exports.addOrganizations = function(req, res, next) {
 
         }).catch(function(err) {
             req.errstatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            db.conn.close()
             next(err)
         })
 
     }).catch(function(err) {
         req.errstatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        db.conn.close()
         next(err)
     })
 }
@@ -44,10 +47,12 @@ exports.getOrganizationRelations = function(req, res, next) {
 
     let orgName = req.params.orgname,
         page    = req.query.page,
-        display = 2,
-        start;
+        display = 100;
 
-    start = _utils.calculateStart(page, display);
+    //start = _utils.calculateStart(page, display);
+
+    if(page < 1)
+        page = 1;
 
     db.conn.sync({force:false}).then(function() {
 
@@ -76,32 +81,27 @@ exports.getOrganizationRelations = function(req, res, next) {
                  JOIN parents p ON o.id = p.org_id
                  WHERE p.parent = '${organizationID}' 
                  GROUP BY o.name
-                 ORDER BY o.name ASC
-                 LIMIT ${start}, ${display};`, { type: db.conn.QueryTypes.SELECT }
+                 ORDER BY o.name ASC`, { type: db.conn.QueryTypes.SELECT }
 
-            ).then(function(graph) {
-                console.log(tap)
-                let pagination = {
-                    total: graph.length,
-                    pages: Math.ceil(graph.length / display),
-                    currentPage: (page === undefined) ? 1 : page
-                }
-
-                graph.push(pagination);
-                res.status(HttpStatus.OK).json(graph)
+            ).then(function(graph, metadata) {
+                const paginateCollection = paginate(graph, page, display);
+                res.status(HttpStatus.OK).json(paginateCollection)
 
             }).catch(function(err) {
                 req.errstatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                db.conn.close()
                 next(err)
             });
 
         }).catch(function(err) {
             req.errstatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            db.conn.close()
             next(err)
         });
 
     }).catch(function(err) {
         req.errstatus = HttpStatus.INTERNAL_SERVER_ERROR;
+        db.conn.close()
         next(err)
     });
 
