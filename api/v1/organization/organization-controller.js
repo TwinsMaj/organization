@@ -31,13 +31,11 @@ exports.addOrganizations = function(req, res, next) {
 
         }).catch(function(err) {
             req.errstatus = HttpStatus.INTERNAL_SERVER_ERROR;
-            db.conn.close()
             next(err)
         })
 
     }).catch(function(err) {
         req.errstatus = HttpStatus.INTERNAL_SERVER_ERROR;
-        db.conn.close()
         next(err)
     })
 }
@@ -89,19 +87,16 @@ exports.getOrganizationRelations = function(req, res, next) {
 
             }).catch(function(err) {
                 req.errstatus = HttpStatus.INTERNAL_SERVER_ERROR;
-                db.conn.close()
                 next(err)
             });
 
         }).catch(function(err) {
             req.errstatus = HttpStatus.INTERNAL_SERVER_ERROR;
-            db.conn.close()
             next(err)
         });
 
     }).catch(function(err) {
         req.errstatus = HttpStatus.INTERNAL_SERVER_ERROR;
-        db.conn.close()
         next(err)
     });
 
